@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Adegga API Core Wrapper
+ * Handles basic requests and parameters
+ *
+ * @package AdeggaAPI
+ * @author Rui Cruz
+ */
 Class AdeggaCore {
 	
 	protected $api_key = null;
@@ -23,8 +30,16 @@ Class AdeggaCore {
 		
 	}
 	
-	
-	public function request($method, $params = array(), $format = 'json') {
+	/**
+	 * Handmade API requests
+	 *
+	 * @param string $method 
+	 * @param array $params 
+	 * @param string $format 
+	 * @return mixed
+	 * @author Rui Cruz
+	 */
+	public function get($method, $params = array(), $format = 'json') {
 		
 		if (empty($this->api_key)) {
 			trigger_error('No API key defined', E_USER_ERROR);
@@ -83,7 +98,7 @@ Class AdeggaCore {
 		
 	}
 	
-	public function debug() {
+	public function getLog() {
 		
 		return $this->log;
 		
