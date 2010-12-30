@@ -33,7 +33,9 @@ class Adegga extends AdeggaCore {
 	 */
 	public function getWineByAvin($avin) {
 		
-		$response = $this->makeRequest('GetWineByAvin', func_get_args());
+		$args = func_get_args();
+		
+		$response = $this->makeRequest('GetWineByAvin', $args);
 		
 		if ($response !== false) {
 			
@@ -54,7 +56,9 @@ class Adegga extends AdeggaCore {
 	 */
 	public function getProducerByID($id) {
 		
-		$response = $this->makeRequest('GetProducerByID', func_get_args());
+		$args = func_get_args();
+		
+		$response = $this->makeRequest('GetProducerByID', $args);
 		
 		if ($response !== false) {
 			

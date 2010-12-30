@@ -1,16 +1,12 @@
-Adegga API Wrapper
-==================
+# Adegga API Wrapper
 
 Official Adegga API documentation is available here:
 [http://www.adegga.com/help/api/](http://www.adegga.com/help/api/)
 
 It's a very simple wrapper for now but it should be updated as soon as the API becomes stable.
 
+## Example Usage
 
-Example Usage
--------------
-
-<code>
 
 	require('adegga_core.php');
 	require('adegga.php');
@@ -28,6 +24,3 @@ Example Usage
 	# HELPER FOR THE EXAMPLE ABOVE
 	$wine = $adegga->getWineByAvin('AVIN6452997073019');
 	var_dump($wine);
-
-</code>
-
