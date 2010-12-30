@@ -16,9 +16,9 @@ class Adegga extends AdeggaCore {
 	 * @param string $api_endpoint 
 	 * @author Rui Cruz
 	 */
-	function __construct($api_key, $request_format = 'json', $api_endpoint = null) {
+	function __construct($api_key, $cache_folder = null, $cache_lifetime = '+1 hour', $request_format = 'json', $api_endpoint = null) {
 		
-		parent::__construct($api_key, $api_endpoint = null);
+		parent::__construct($api_key, $cache_folder, $cache_lifetime, $api_endpoint = null);
 		
 		$this->request_format = $request_format;
 	

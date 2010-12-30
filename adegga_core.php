@@ -17,10 +17,20 @@ Class AdeggaCore {
 	
 	private $log = null;
 	
+	protected $cache_folder = null;
 	
-	function __construct($api_key, $api_endpoint = null) {
+	protected $cache_identifier = 'adegga';
+	
+	protected $cache_lifetime = null;
+	
+	
+	function __construct($api_key, $cache_folder = null, $cache_lifetime = '+5 minutes', $api_endpoint = null) {
 		
 		$this->api_key = $api_key;
+		
+		$this->cache_folder = $cache_folder;
+		
+		$this->cache_lifetime = $cache_lifetime;
 		
 		if (!is_null($api_endpoint)) {
 			
@@ -78,7 +88,20 @@ Class AdeggaCore {
 		
 		$request_url = $this->buildRequest($method, $params);
 		
-		$response = file_get_contents($request_url);
+		# CHECK CACHE
+		$response = $this->getCache($request_url);
+		
+		if ($response === false) {
+		
+			$response = file_get_contents($request_url);
+			
+			if ($response !== false) {
+				
+				$this->setCache($request_url, $response);
+				
+			}
+			
+		}
 		
 		if ($this->request_format == 'json' && $response !== false) {
 			
@@ -92,12 +115,68 @@ Class AdeggaCore {
 		
 	}
 	
+	
+	protected function setCache($request_url, $response) {
+		
+		if (is_null($this->cache_folder)) return false;
+		
+		$request_url_hash = $this->cache_identifier . '_' . md5($request_url);
+		
+		file_put_contents($this->cache_folder . $request_url_hash, $response);
+		
+	}
+	
+	/**
+	 * Get cached response for the given URL
+	 *
+	 * @param string $request_url 
+	 * @return mixed
+	 * @author Rui Cruz
+	 */
+	protected function getCache($request_url) {
+		
+		if (is_null($this->cache_folder)) return false;
+		
+		$request_url_hash = $this->cache_identifier . '_' . md5($request_url);
+		
+		if (!file_exists($this->cache_folder . $request_url_hash)) {
+			
+			return false;
+			
+		} elseif ( strtotime($this->cache_lifetime, filemtime($this->cache_folder . $request_url_hash)) < time() ) {
+			
+			# CACHE EXPIRED, REMOVE FILE
+			unlink($this->cache_folder . $request_url_hash);
+			return false;
+			
+		} else {
+			
+			return file_get_contents($this->cache_folder . $request_url_hash);
+			
+		}
+		
+	}
+	
+	/**
+	 * Logs every request URL and response
+	 *
+	 * @param string $request_url 
+	 * @param mixed $response 
+	 * @return void
+	 * @author Rui Cruz
+	 */
 	protected function log($request_url, $response) {
 		
 		$this->log[] = array('request' => $request_url, 'response' => $response);
 		
 	}
 	
+	/**
+	 * Returns the request / response log
+	 *
+	 * @return array
+	 * @author Rui Cruz
+	 */
 	public function getLog() {
 		
 		return $this->log;
